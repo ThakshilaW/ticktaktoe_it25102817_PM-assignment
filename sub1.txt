@@ -18,14 +18,13 @@
  */
 
 
-//function declarations with parameters 
-char** createBoard(int size);
-void freeBoard(char** board, int size);
-void displayBoard(char** board, int size);
-bool isValidMove(char** board, int size, int row, int col);
-void getUserInput(char** board, int size, int *row, int *col);
-bool checkWin(char** board, int size, char playerSymbol);
-bool checkDraw(char** board, int size);
+//function declarations
+char** createBoard();
+void freeBoard();
+bool isValidMove();
+void getUserInput();
+bool checkWin();
+bool checkDraw();
 
 
 
