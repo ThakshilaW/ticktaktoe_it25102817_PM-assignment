@@ -26,6 +26,7 @@ bool isValidMove(char** board, int size, int row, int col);
 void getUserInput(char** board, int size, int *row, int *col);
 bool checkWin(char** board, int size, char playerSymbol);
 bool checkDraw(char** board, int size);
+void logMove(FILE *logFile, char** board, int size, char player, int row, int col);
 
 
 
@@ -302,3 +303,134 @@ bool checkDraw(char** board, int size)
     // No empty cells found - game is a draw
     return true;
 }
+
+// this function creates a log for later access or analysis of games.
+// fogfile is a pointer to the open log file.
+
+void logMove(FILE *logFile, char** board, int size, char player, int row, int col)
+{
+    // Log the move details
+    fprintf(logFile, "Player %c moved to (%d, %d)\n", player, row, col);
+    fprintf(logFile, "Current board state:\n");
+
+    // Log the board in a simple grid format
+    for (int i = 0; i < size; i++) 
+    {
+        fprintf(logFile, "|");
+        for (int j = 0; j < size; j++) 
+	{
+            fprintf(logFile, " %c |", board[i][j]);
+        }
+        fprintf(logFile, "\n");
+    }
+    fprintf(logFile, "--- End of turn ---\n\n");
+}
+
+int main()
+{
+    // Game configuration variables
+    int boardSize;              // N x N board size (3-10)
+    char currentPlayer = 'X';   // Start with player X
+    int moveRow, moveCol;       // Store player's move coordinates
+    FILE *gameLogFile;          // File pointer for game logging
+
+    // Welcome message and game setup
+
+    printf("TIC-TAC-TOE\n");
+   
+
+    // Get board size from user with validation
+    printf("Enter board size N (3 <= N <= 10): ");
+    scanf("%d", &boardSize);
+
+    // Validate board size input
+    if (boardSize < 3 || boardSize > 10) 
+    {
+        printf(" Invalid board size! Please choose between 3 and 10.\n");
+        printf("Restart the program to try again.\n");
+        return 1; // Exit program with error code
+    }
+
+    printf(" Creating a %dx%d game board...\n\n", boardSize, boardSize);
+
+    // Initialize game components
+    char** gameBoard = createBoard(boardSize);  // Create empty board
+    gameLogFile = fopen("tictactoe_log.txt", "w");  // Open log file for writing
+
+    // Check if log file opened successfully
+    if (gameLogFile == NULL) 
+    {
+        printf(" Error: Could not create game log file!\n");
+        freeBoard(gameBoard, boardSize);  // Clean up memory before exiting
+        return 1;
+    }
+
+    // Log game start information
+    fprintf(gameLogFile, "=== TIC-TAC-TOE GAME LOG ===\n");
+    fprintf(gameLogFile, "Board Size: %dx%d\n", boardSize, boardSize);
+    fprintf(gameLogFile, "Players: X vs O\n");
+    fprintf(gameLogFile, "=============================\n\n");
+
+    // Display initial empty board
+    printf("Initial game board:\n");
+    displayBoard(gameBoard, boardSize);
+
+
+
+    printf("Player X goes first\n\n");
+    
+    while (true)
+    {
+        // Display current player's turn
+        printf("Player %c's turn:\n", currentPlayer);
+        printf("Enter row and column numbers (0-%d) separated by a space:\n", boardSize - 1);
+        printf("> ");
+
+        // Get and process player's move
+        getUserInput(gameBoard, boardSize, &moveRow, &moveCol);
+        
+        // Update game board with player's symbol
+        gameBoard[moveRow][moveCol] = currentPlayer;
+
+        // Display updated board
+        printf("\nPlayer %c placed at position (%d, %d)\n", currentPlayer, moveRow, moveCol);
+        displayBoard(gameBoard, boardSize);
+
+        // Log the move to file using logMove function
+        logMove(gameLogFile, gameBoard, boardSize, currentPlayer, moveRow, moveCol);
+
+        // Check Game status
+        // Check if current player has won
+        if (checkWin(gameBoard, boardSize, currentPlayer)) 
+	{
+            printf(" Player %c WINS! \n", currentPlayer);
+            fprintf(gameLogFile, " WINNER: Player %c\n", currentPlayer);
+            fprintf(gameLogFile, "=== GAME OVER ===\n");
+            break;  // Exit game loop
+        }
+
+        // Check if game is a draw (board full, no winner)
+        if (checkDraw(gameBoard, boardSize)) 
+	{
+            printf(" DRAW: The board is full with no winner.\n");
+            fprintf(gameLogFile, " RESULT: Draw game\n");
+            fprintf(gameLogFile, "=== GAME OVER ===\n");
+            break;  // Exit game loop
+        }
+
+        // Switch to other player for next turn
+        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+        printf("Switching turns... Next player: %c\n\n", currentPlayer);
+    }
+
+    // cleanup    
+    printf("\n Game log saved to 'tictactoe_log.txt'\n");
+    printf(" Thanks for playing!\n");
+
+    // Close log file and free memory
+    fclose(gameLogFile);
+    freeBoard(gameBoard, boardSize);
+
+    return 0; // Successful program execution
+}
+
