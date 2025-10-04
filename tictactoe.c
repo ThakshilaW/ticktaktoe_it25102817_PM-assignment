@@ -1,24 +1,14 @@
 /**
- * TIC-TAC-TOE GAME FUNCTIONS - PART 1 (Two Players)
- * 
- * Modular functions for implementing Tic-Tac-Toe game logic
+ * TIC-TAC-TOE GAME
+ * Part 1: Two Players | Part 2: Player vs Computer
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 
-
-/**
- * Creates and initializes the game board with empty spaces
- * 
- * param--> "size" The dimension of the board (size x size)
- * return--> Pointer to the dynamically allocated 2D character array
- * note: Memory must be freed using freeBoard() to prevent leaks
- */
-
-
-//function declarations with parameters 
+// Function declarations
 char** createBoard(int size);
 void freeBoard(char** board, int size);
 void displayBoard(char** board, int size);
@@ -27,8 +17,8 @@ void getUserInput(char** board, int size, int *row, int *col);
 bool checkWin(char** board, int size, char playerSymbol);
 bool checkDraw(char** board, int size);
 void logMove(FILE *logFile, char** board, int size, char player, int row, int col);
-
-
+int getGameMode();
+void makeComputerMove(char** board, int size, int *row, int *col);
 
 char** createBoard(int size) 
 {
@@ -62,10 +52,6 @@ char** createBoard(int size)
     return newBoard;
 }
 
-/**
- * freeBoard function frees all dynamically allocated memory used by the game board
- * note: Critical function to prevent memory leaks - must be called before program exit
- */
 void freeBoard(char** board, int size) 
 {
     // Free each row's memory
@@ -77,10 +63,6 @@ void freeBoard(char** board, int size)
     free(board);
 }
 
-/**
- * Displays the current state of the game board in a user-friendly format 
- * Shows column headers, row numbers, and uses a grid-like format
- */
 void displayBoard(char** board, int size) 
 {
     printf("\n");
@@ -97,7 +79,7 @@ void displayBoard(char** board, int size)
     printf("    +");
     for (int col = 0; col < size; col++)
     {
-        printf("---+");// adding a + sign here gives clear image of cells in the board
+        printf("---+");
     }
     printf("\n");
 
@@ -124,11 +106,6 @@ void displayBoard(char** board, int size)
     printf("\n");
 }
 
-
-/**
- * isValidMove function validates whether a proposed move is legal.
- * return true if move is valid (within bounds and empty cell), false otherwise
- */
 bool isValidMove(char** board, int size, int row, int col) 
 {
     // Check if coordinates are within the board boundaries
@@ -146,14 +123,6 @@ bool isValidMove(char** board, int size, int row, int col)
     return true;
 }
 
-/**
- * Gets and validates player input for their next move
- * row is a Pointer to store the validated row input
- * col is a Pointer to store the validated column input
- * 
- * Uses infinite loop that only breaks when valid input is received
- * Handles various error cases with specific error messages
- */
 void getUserInput(char** board, int size, int *row, int *col) 
 {
     while (true) 
@@ -189,20 +158,9 @@ void getUserInput(char** board, int size, int *row, int *col)
     }
 }
 
-/**
- * checkWin function checks if the specified player has achieved a winning condition.
- * param--> playerSymbol, The player's symbol ('X' or 'O') to check for
- * return--> true, if player has N identical symbols in a row, column, or diagonal
- * 
- * Checks all possible winning conditions:
- * - Horizontal rows
- * - Vertical columns  
- * - Main diagonal (top-left to bottom-right)
- * - secondary diagonal (top-right to bottom-left)
- */
 bool checkWin(char** board, int size, char playerSymbol) 
 {
-    bool foundWin;//this is a function created within a function so ig no need to declare initially
+    bool foundWin;
 
     // Check all rows (horizontal lines)
     for (int row = 0; row < size; row++) 
@@ -280,12 +238,6 @@ bool checkWin(char** board, int size, char playerSymbol)
     return false;
 }
 
-/**
- * checkDraw function checks if the game has ended in a draw (tie)
- * return--> true, if board is full with no winner, false otherwise
- * 
- * A draw happens when all cells are filled but no player has achieved N in a row
- */
 bool checkDraw(char** board, int size)
 {
     // Scan through every cell looking for empty spaces
@@ -303,9 +255,6 @@ bool checkDraw(char** board, int size)
     // No empty cells found - game is a draw
     return true;
 }
-
-// this function creates a log for later access or analysis of games.
-// fogfile is a pointer to the open log file.
 
 void logMove(FILE *logFile, char** board, int size, char player, int row, int col)
 {
@@ -326,18 +275,64 @@ void logMove(FILE *logFile, char** board, int size, char player, int row, int co
     fprintf(logFile, "--- End of turn ---\n\n");
 }
 
+int getGameMode()
+{
+    int mode;
+    printf("Select Game Mode:\n");
+    printf("1. Two Players (User vs User)\n");
+    printf("2. User vs Computer\n");
+    printf("Enter choice (1-2): ");
+    
+    while (true) 
+    {
+        if (scanf("%d", &mode) != 1) 
+        {
+            printf("Invalid input! Please enter 1 or 2: ");
+            while (getchar() != '\n');
+            continue;
+        }
+        
+        if (mode == 1 || mode == 2) 
+        {
+            break;
+        } 
+        else 
+        {
+            printf("Invalid choice! Please enter 1 or 2: ");
+        }
+    }
+    return mode;
+}
+
+void makeComputerMove(char** board, int size, int *row, int *col)
+{
+    // Generate random moves until a valid one is found
+    do {
+        *row = rand() % size;
+        *col = rand() % size;
+    } while (!isValidMove(board, size, *row, *col));
+    
+    printf("Computer chooses position (%d, %d)\n", *row, *col);
+}
+
 int main()
 {
     // Game configuration variables
-    int boardSize;              // N x N board size (3-10)
-    char currentPlayer = 'X';   // Start with player X
-    int moveRow, moveCol;       // Store player's move coordinates
-    FILE *gameLogFile;          // File pointer for game logging
+    int boardSize;
+    int gameMode;
+    char currentPlayer = 'X';
+    int moveRow, moveCol;
+    FILE *gameLogFile;
+
+    // Initialize random number generator for computer moves
+    srand(time(NULL));
 
     // Welcome message and game setup
-
     printf("TIC-TAC-TOE\n");
    
+    // Get game mode
+    gameMode = getGameMode();
+    printf("\n");
 
     // Get board size from user with validation
     printf("Enter board size N (3 <= N <= 10): ");
@@ -348,46 +343,68 @@ int main()
     {
         printf(" Invalid board size! Please choose between 3 and 10.\n");
         printf("Restart the program to try again.\n");
-        return 1; // Exit program with error code
+        return 1;
     }
 
     printf(" Creating a %dx%d game board...\n\n", boardSize, boardSize);
 
     // Initialize game components
-    char** gameBoard = createBoard(boardSize);  // Create empty board
-    gameLogFile = fopen("tictactoe_log.txt", "w");  // Open log file for writing
+    char** gameBoard = createBoard(boardSize);
+    gameLogFile = fopen("tictactoe_log.txt", "w");
 
     // Check if log file opened successfully
     if (gameLogFile == NULL) 
     {
         printf(" Error: Could not create game log file!\n");
-        freeBoard(gameBoard, boardSize);  // Clean up memory before exiting
+        freeBoard(gameBoard, boardSize);
         return 1;
     }
 
     // Log game start information
     fprintf(gameLogFile, "=== TIC-TAC-TOE GAME LOG ===\n");
     fprintf(gameLogFile, "Board Size: %dx%d\n", boardSize, boardSize);
-    fprintf(gameLogFile, "Players: X vs O\n");
+    if (gameMode == 1) {
+        fprintf(gameLogFile, "Mode: Two Players (X vs O)\n");
+    } else {
+        fprintf(gameLogFile, "Mode: User vs Computer (X vs O)\n");
+    }
     fprintf(gameLogFile, "=============================\n\n");
 
     // Display initial empty board
     printf("Initial game board:\n");
     displayBoard(gameBoard, boardSize);
 
-
-
     printf("Player X goes first\n\n");
     
     while (true)
     {
         // Display current player's turn
-        printf("Player %c's turn:\n", currentPlayer);
-        printf("Enter row and column numbers (0-%d) separated by a space:\n", boardSize - 1);
-        printf("> ");
-
-        // Get and process player's move
-        getUserInput(gameBoard, boardSize, &moveRow, &moveCol);
+        if (currentPlayer == 'X') 
+        {
+            // Always human player for X
+            printf("Player %c's turn:\n", currentPlayer);
+            printf("Enter row and column numbers (0-%d) separated by a space:\n", boardSize - 1);
+            printf("> ");
+            getUserInput(gameBoard, boardSize, &moveRow, &moveCol);
+        } 
+        else 
+        {
+            // Player O - depends on game mode
+            if (gameMode == 1) 
+            {
+                // Two players mode - human player O
+                printf("Player %c's turn:\n", currentPlayer);
+                printf("Enter row and column numbers (0-%d) separated by a space:\n", boardSize - 1);
+                printf("> ");
+                getUserInput(gameBoard, boardSize, &moveRow, &moveCol);
+            } 
+            else 
+            {
+                // Computer mode - computer player O
+                printf("Computer's turn (Player O):\n");
+                makeComputerMove(gameBoard, boardSize, &moveRow, &moveCol);
+            }
+        }
         
         // Update game board with player's symbol
         gameBoard[moveRow][moveCol] = currentPlayer;
@@ -403,10 +420,17 @@ int main()
         // Check if current player has won
         if (checkWin(gameBoard, boardSize, currentPlayer)) 
 	{
-            printf(" Player %c WINS! \n", currentPlayer);
+            if (gameMode == 2 && currentPlayer == 'O') 
+            {
+                printf("COMPUTER WINS!\n");
+            } 
+            else 
+            {
+                printf(" Player %c WINS! \n", currentPlayer);
+            }
             fprintf(gameLogFile, " WINNER: Player %c\n", currentPlayer);
             fprintf(gameLogFile, "=== GAME OVER ===\n");
-            break;  // Exit game loop
+            break;
         }
 
         // Check if game is a draw (board full, no winner)
@@ -415,12 +439,21 @@ int main()
             printf(" DRAW: The board is full with no winner.\n");
             fprintf(gameLogFile, " RESULT: Draw game\n");
             fprintf(gameLogFile, "=== GAME OVER ===\n");
-            break;  // Exit game loop
+            break;
         }
 
         // Switch to other player for next turn
         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-        printf("Switching turns... Next player: %c\n\n", currentPlayer);
+        
+        // Only show message when switching to human player
+        if (currentPlayer == 'X' || (currentPlayer == 'O' && gameMode == 1)) 
+        {
+            printf("Switching turns... Next player: %c\n\n", currentPlayer);
+        } 
+        else 
+        {
+            printf("\n");
+        }
     }
 
     // cleanup    
@@ -431,6 +464,5 @@ int main()
     fclose(gameLogFile);
     freeBoard(gameBoard, boardSize);
 
-    return 0; // Successful program execution
+    return 0;
 }
-
