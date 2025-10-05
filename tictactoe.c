@@ -1,7 +1,7 @@
 /**
  * TIC-TAC-TOE GAME
  * With the use of header files in the revised version
- * Part 1: Two Players | Part 2: Player vs Computer
+ * Part 1: Two Players | Part 2: Player vs Computer | Part 3: Three Players
  */
 
 #include "tttgamefunctions.h"        
@@ -14,10 +14,11 @@
 
 int main()
 {
-    // Game configuration variables
+    // Game variables
     int boardSize;
-    int selectedMode; 
-    char currentPlayer = 'X';
+    int selectedMode;
+    int currentPlayer = 0; // 0=X, 1=O, 2=Z
+    char playerSymbols[3] = {'X', 'O', 'Z'};
     int moveRow, moveCol;
     FILE *gameLogFile;
 
@@ -28,11 +29,11 @@ int main()
     printf("TIC-TAC-TOE\n");
    
     // Get game mode
-    selectedMode = gameMode(); 
+    selectedMode = gameMode();
     printf("\n");
 
     // Get board size from user with validation
-    printf("Enter board size N (3 <= N <= 10): ");
+    printf("Enter board size--> N (3 <= N <= 10): ");
     scanf("%d", &boardSize);
 
     // Validate board size input
@@ -62,11 +63,15 @@ int main()
     fprintf(gameLogFile, "Board Size: %dx%d\n", boardSize, boardSize);
     if (selectedMode == 1) 
     { 
-        fprintf(gameLogFile, "Mode: Two Players (X vs O)\n");
+        fprintf(gameLogFile, "Mode: Three Human Players (X, O, Z)\n");
+    }
+    else if (selectedMode == 2)
+    {
+        fprintf(gameLogFile, "Mode: Two Humans + One Computer\n");
     }
     else 
     {
-        fprintf(gameLogFile, "Mode: User vs Computer (X vs O)\n");
+        fprintf(gameLogFile, "Mode: One Human + Two Computers\n");
     }
     fprintf(gameLogFile, "=============================\n\n");
 
@@ -78,57 +83,47 @@ int main()
     
     while (true)
     {
+        char currentSymbol = playerSymbols[currentPlayer];
+        
         // Display current player's turn
-        if (currentPlayer == 'X') 
+        if (playerType(currentPlayer, selectedMode) == 1) 
         {
-            // Always human player for X
-            printf("Player %c's turn:\n", currentPlayer);
+            // Human player
+            printf("Player %c's turn:\n", currentSymbol);
             printf("Enter row and column numbers (0-%d) separated by a space:\n", boardSize - 1);
             printf("> ");
-            userInput(gameBoard, boardSize, &moveRow, &moveCol);
+            userInput(gameBoard, boardSize, &moveRow, &moveCol, currentPlayer); // FIXED: added currentPlayer
         } 
         else 
         {
-            // Player O - depends on game mode
-            if (selectedMode == 1)  
-            {
-                // Two players mode - human player O
-                printf("Player %c's turn:\n", currentPlayer);
-                printf("Enter row and column numbers (0-%d) separated by a space:\n", boardSize - 1);
-                printf("> ");
-                userInput(gameBoard, boardSize, &moveRow, &moveCol);
-            } 
-            else 
-            {
-                // Computer mode - computer player O
-                printf("Computer's turn (Player O):\n");
-                computerMove(gameBoard, boardSize, &moveRow, &moveCol);
-            }
+            // Computer player
+            printf("Computer's turn (Player %c):\n", currentSymbol);
+            computerMove(gameBoard, boardSize, &moveRow, &moveCol); // FIXED: removed extra parameter
         }
         
         // Update game board with player's symbol
-        gameBoard[moveRow][moveCol] = currentPlayer;
+        gameBoard[moveRow][moveCol] = currentSymbol;
 
         // Display updated board
-        printf("\nPlayer %c placed at position (%d, %d)\n", currentPlayer, moveRow, moveCol);
+        printf("\nPlayer %c placed at position (%d, %d)\n", currentSymbol, moveRow, moveCol);
         displayBoard(gameBoard, boardSize);
 
         // Log the move to file using logMove function
-        logMove(gameLogFile, gameBoard, boardSize, currentPlayer, moveRow, moveCol);
+        logMove(gameLogFile, gameBoard, boardSize, currentSymbol, moveRow, moveCol);
 
         // Check Game status
         // Check if current player has won
-        if (checkWin(gameBoard, boardSize, currentPlayer)) 
+        if (checkWin(gameBoard, boardSize, currentSymbol)) 
         {
-            if (selectedMode == 2 && currentPlayer == 'O')
+            if (playerType(currentPlayer, selectedMode) == 0) 
             {
-                printf("COMPUTER WINS!\n");
+                printf("COMPUTER WINS! (Player %c)\n", currentSymbol);
             } 
             else 
             {
-                printf(" Player %c WINS! \n", currentPlayer);
+                printf(" Player %c WINS! \n", currentSymbol);
             }
-            fprintf(gameLogFile, " WINNER: Player %c\n", currentPlayer);
+            fprintf(gameLogFile, " WINNER: Player %c\n", currentSymbol);
             fprintf(gameLogFile, "=== GAME OVER ===\n");
             break;
         }
@@ -142,18 +137,9 @@ int main()
             break;
         }
 
-        // Switch to other player for next turn
-        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-        
-        // Only show message when switching to human player
-        if (currentPlayer == 'X' || (currentPlayer == 'O' && selectedMode == 1))  
-        {
-            printf("Switching turns... Next player: %c\n\n", currentPlayer);
-        } 
-        else 
-        {
-            printf("\n");
-        }
+        // Switch to next player (0→1→2→0)
+        currentPlayer = (currentPlayer + 1) % 3;
+        printf("Switching turns... Next player: %c\n\n", playerSymbols[currentPlayer]);
     }
 
     // cleanup    
