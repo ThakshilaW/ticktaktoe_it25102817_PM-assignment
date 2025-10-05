@@ -175,16 +175,16 @@ int gameMode()
 {
     int mode;
     printf("Select Game Mode:\n");
-    printf("1. Three Players (All Human)\n");
-    printf("2. Two Humans + One Computer\n");
-    printf("3. One Human + Two Computers\n");
+    printf("1. Two Players (X vs O)\n");
+    printf("2. Player vs Computer\n");
+    printf("3. Three Players\n");
     printf("Enter choice (1-3): ");
-    
+
     while (true)
     {
         if (scanf("%d", &mode) != 1)
         {
-            printf("Invalid input! Please enter 1, 2, or 3: ");
+            printf("Invalid input, enter 1, 2, or 3: ");
             while (getchar() != '\n');
             continue;
         }
@@ -195,9 +195,42 @@ int gameMode()
         }
         else
         {
-            printf("Invalid choice! Please enter 1, 2, or 3: ");
+            printf("Invalid choice, enter 1, 2, or 3: ");
         }
     }
+
+    // If they chose Three Players, show sub-options
+    if (mode == 3)
+    {
+        int subMode;
+        printf("\nSelect Player Mode:\n");
+        printf("1. Three Players\n");
+        printf("2. Two players + One Computer\n");
+        printf("3. One players + Two Computers\n");
+        printf("Enter choice (1-3): ");
+
+        while (true)
+        {
+            if (scanf("%d", &subMode) != 1)
+            {
+                printf("Invalid input, enter 1, 2, or 3: ");
+                while (getchar() != '\n');
+                continue;
+            }
+
+            if (subMode >= 1 && subMode <= 3)
+            {
+                // Return unique codes for each
+                // 31 = Three players, 32 = 2P+1C, 33 = 1P+2C
+                return 30 + subMode;
+            }
+            else
+            {
+                printf("Invalid choice! Please enter 1, 2, or 3: ");
+            }
+        }
+    }
+
     return mode;
 }
 
@@ -227,17 +260,34 @@ char playerSymbol(int playerNumber)
 
 int playerType(int playerNum, int gameMode)
 {
-	if (gameMode == 1)
-	{
-		return 1;
-	}
-	else if (gameMode == 2)
-	{
-		return (playerNum == 2) ? 0 : 1;//one player of the three is the computer, goes by symbol Z
-	}
-	else
-	{
-		return (playerNum == 0) ? 1 : 0;//only one player is human, goes by X
-	}
+    // Mode 1: Two Players (both human)
+    if (gameMode == 1)
+    {
+        return 1; // Both players are human
+    }
+    // Mode 2: Player vs Computer (X=player, O=computer)
+    else if (gameMode == 2)
+    {
+        return (playerNum == 0) ? 1 : 0; // Player X is human, Player O is computer
+    }
+    // Mode 31: Three Players
+    else if (gameMode == 31)
+    {
+        return 1; // All three players are human
+    }
+    // Mode 32: Two players + One Computer (X=player, O=player, Z=computer)
+    else if (gameMode == 32)
+    {
+        return (playerNum == 2) ? 0 : 1; // Only player Z is computer
+    }
+    // Mode 33: One player + Two Computers (X=player, O=computer, Z=computer)
+    else if (gameMode == 33)
+    {
+        return (playerNum == 0) ? 1 : 0; // Only player X is human
+    }
+    // Default fallback
+    else
+    {
+        return 1; // Assume player if unknown mode
+    }
 }
-

@@ -1,6 +1,6 @@
 /**
  * TIC-TAC-TOE GAME
- * Final version with part 3 
+ * Final version with part 3 : fixdddd
  * Part 1: Two Players | Part 2: Player vs Computer | Part 3: Three Players
  */
 
@@ -17,10 +17,11 @@ int main()
     // Game variables
     int boardSize;
     int selectedMode;
-    int currentPlayer = 0; // 0=X, 1=O, 2=Z
-    char playerSymbols[3] = {'X', 'O', 'Z'};
+    int currentPlayer = 0; // 0=X, 1=O
+    char playerSymbols[2] = {'X', 'O'}; // Only 2 symbols for modes 1 & 2
     int moveRow, moveCol;
     FILE *gameLogFile;
+    int totalPlayers = 2; // Default to 2 players for modes 1 & 2
 
     // Initialize random number generator for computer moves
     srand(time(NULL));
@@ -31,6 +32,18 @@ int main()
     // Get game mode
     selectedMode = gameMode();
     printf("\n");
+
+    // Handle three-player modes
+    if (selectedMode >= 31 && selectedMode <= 33) 
+    {
+        totalPlayers = 3;
+        // Expand symbols array for three players
+        char threeSymbols[3] = {'X', 'O', 'Z'};
+        // We'll use threeSymbols when needed
+        playerSymbols[0] = 'X';
+        playerSymbols[1] = 'O'; 
+        playerSymbols[2] = 'Z';
+    }
 
     // Get board size from user with validation
     printf("Enter board size-->(between 3 and 10 including them): ");
@@ -61,18 +74,34 @@ int main()
     // record start information
     fprintf(gameLogFile, "=== TIC-TAC-TOE GAME RECORD ===\n");
     fprintf(gameLogFile, "Board Size: %dx%d\n", boardSize, boardSize);
+    
+    // Handle all mode types correctly
     if (selectedMode == 1) 
     { 
-        fprintf(gameLogFile, "Mode: Three Players (X, O, Z)\n");
+        fprintf(gameLogFile, "Mode: Two Players (X vs O)\n");
+        printf("Mode: Two Players (X vs O)\n");
     }
     else if (selectedMode == 2)
     {
-        fprintf(gameLogFile, "Mode: Two players + One Computer\n");
+        fprintf(gameLogFile, "Mode: Player vs Computer\n");
+        printf("Mode: Player vs Computer\n");
     }
-    else 
+    else if (selectedMode == 31)
+    {
+        fprintf(gameLogFile, "Mode: Three Players\n");
+        printf("Mode: Three Players\n");
+    }
+    else if (selectedMode == 32)
+    {
+        fprintf(gameLogFile, "Mode: Two players + One Computer\n");
+        printf("Mode: Two players + One Computer\n");
+    }
+    else if (selectedMode == 33)
     {
         fprintf(gameLogFile, "Mode: One player + Two Computers\n");
+        printf("Mode: One player + Two Computers\n");
     }
+    
     fprintf(gameLogFile, "=============================\n\n");
 
     // Display empty board
@@ -83,22 +112,32 @@ int main()
     
     while (true)
     {
-        char currentSymbol = playerSymbols[currentPlayer];
+        char currentSymbol;
+        
+        // Get current symbol based on number of players
+        if (totalPlayers == 3) 
+        {
+            currentSymbol = (currentPlayer == 0) ? 'X' : (currentPlayer == 1) ? 'O' : 'Z';
+        }
+        else 
+        {
+            currentSymbol = (currentPlayer == 0) ? 'X' : 'O';
+        }
         
         // Display current player's turn
         if (playerType(currentPlayer, selectedMode) == 1) 
         {
-            // Human player
+            // player
             printf("Player %c's turn:\n", currentSymbol);
             printf("Enter row and column numbers (0-%d) separated by a space:\n", boardSize - 1);
             printf("> ");
-            userInput(gameBoard, boardSize, &moveRow, &moveCol, currentPlayer); // FIXED: added currentPlayer
+            userInput(gameBoard, boardSize, &moveRow, &moveCol, currentPlayer);
         } 
         else 
         {
-            // Computer player
+            // Computer
             printf("Computer's turn (Player %c):\n", currentSymbol);
-            computerMove(gameBoard, boardSize, &moveRow, &moveCol); // FIXED: removed extra parameter
+            computerMove(gameBoard, boardSize, &moveRow, &moveCol);
         }
         
         // Update game board with player's symbol
@@ -137,9 +176,20 @@ int main()
             break;
         }
 
-        // Switch to next player (0→1→2→0)
-        currentPlayer = (currentPlayer + 1) % 3;
-        printf("Switching turns... Next player: %c\n\n", playerSymbols[currentPlayer]);
+        // Switch to next player (handle 2 or 3 players)
+        if (totalPlayers == 3) 
+        {
+            currentPlayer = (currentPlayer + 1) % 3;
+        }
+        else 
+        {
+            currentPlayer = (currentPlayer + 1) % 2;
+        }
+        
+        printf("Switching turns... Next player: %c\n\n", 
+               (totalPlayers == 3) ? 
+               ((currentPlayer == 0) ? 'X' : (currentPlayer == 1) ? 'O' : 'Z') :
+               ((currentPlayer == 0) ? 'X' : 'O'));
     }
 
     // cleanup    
