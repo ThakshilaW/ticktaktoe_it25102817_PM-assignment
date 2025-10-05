@@ -1,5 +1,5 @@
-#ifndef GAMERECORD_H
-#define GAMERECORD_H
+#ifndef TTTGAMERECORD_H
+#define TTTGAMERECORD_H
 
 #include<stdio.h>
 

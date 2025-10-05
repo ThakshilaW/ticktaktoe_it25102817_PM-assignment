@@ -32,7 +32,7 @@ for (int row = 0; row < size; row++)
 //initialize all cells as empty
 	for (int col = 0; col < size; col++)
 	{
-		newBoard[row][col] = '  ';
+		newBoard[row][col] = ' ';
 	}
 }
 return newBoard;
@@ -77,7 +77,7 @@ void displayBoard(char** board, int size)
 	{
 		printf(" %d |",row);
 
-		for (int col = 0; col<size; col++);
+		for (int col = 0; col<size; col++)
 		{
 		printf(" %c |", board[row][col]);
 		}
@@ -87,7 +87,7 @@ void displayBoard(char** board, int size)
 		// row seperator
 	
 		printf("   +");
-		for (int col = 0; col<size; col++);
+		for (int col = 0; col<size; col++)
 		{
 		printf("---+");
 		}

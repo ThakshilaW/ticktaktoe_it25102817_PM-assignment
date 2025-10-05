@@ -133,7 +133,7 @@ bool checkDraw(char** board, int size)
 
 
 
-void userInput(char** board, int size, int *row, int *col)
+bool userInput(char** board, int size, int *row, int *col)
 {
     while (true)
     {
@@ -149,7 +149,7 @@ void userInput(char** board, int size, int *row, int *col)
         }
 
 	// Check if the move is valid (within bounds and empty cell)
-        if (isValidMove(board, size, *row, *col))
+        if (validMove(board, size, *row, *col))
 	{
             break; // Valid move received, exit loop
         } else
@@ -170,7 +170,7 @@ void userInput(char** board, int size, int *row, int *col)
 
 
 
-int gameMode();
+int gameMode()
 {
     int mode;
     printf("Select Game Mode:\n");
@@ -207,7 +207,7 @@ void computerMove(char** board, int size, int *row, int *col)
     do {
         *row = rand() % size;
         *col = rand() % size;
-    } while (!isValidMove(board, size, *row, *col));
+    } while (!validMove(board, size, *row, *col));
     
     printf("Computer chooses position (%d, %d)\n", *row, *col);
 }

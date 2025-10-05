@@ -4,19 +4,19 @@
  * Part 1: Two Players | Part 2: Player vs Computer
  */
 
-#include "tttgamefunctions.h"
-#include "tttgamelogicninputfunc.h"
+#include "tttgamefunctions.h"        
+#include "tttgamelogicninputfunc.h"  
+#include "tttgamerecords.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
 
-
 int main()
 {
     // Game configuration variables
     int boardSize;
-    int gameMode;
+    int selectedMode; 
     char currentPlayer = 'X';
     int moveRow, moveCol;
     FILE *gameLogFile;
@@ -28,7 +28,7 @@ int main()
     printf("TIC-TAC-TOE\n");
    
     // Get game mode
-    gameMode = gameMode();
+    selectedMode = gameMode(); 
     printf("\n");
 
     // Get board size from user with validation
@@ -47,22 +47,25 @@ int main()
 
     // Initialize game components
     char** gameBoard = Board(boardSize);
-    gameLogFile = fopen("tictactoe_log.txt", "w");
+    gameLogFile = fopen("tictactoe_record.txt", "w");
 
     // Check if log file opened successfully
     if (gameLogFile == NULL) 
     {
-        printf(" Error: Could not create game log file!\n");
+        printf(" Error: Could not create game record!\n");
         freeBoard(gameBoard, boardSize);
         return 1;
     }
 
     // Log game start information
-    fprintf(gameLogFile, "=== TIC-TAC-TOE GAME LOG ===\n");
+    fprintf(gameLogFile, "=== TIC-TAC-TOE GAME RECORD ===\n");
     fprintf(gameLogFile, "Board Size: %dx%d\n", boardSize, boardSize);
-    if (gameMode == 1) {
+    if (selectedMode == 1) 
+    { 
         fprintf(gameLogFile, "Mode: Two Players (X vs O)\n");
-    } else {
+    }
+    else 
+    {
         fprintf(gameLogFile, "Mode: User vs Computer (X vs O)\n");
     }
     fprintf(gameLogFile, "=============================\n\n");
@@ -87,7 +90,7 @@ int main()
         else 
         {
             // Player O - depends on game mode
-            if (gameMode == 1) 
+            if (selectedMode == 1)  
             {
                 // Two players mode - human player O
                 printf("Player %c's turn:\n", currentPlayer);
@@ -116,8 +119,8 @@ int main()
         // Check Game status
         // Check if current player has won
         if (checkWin(gameBoard, boardSize, currentPlayer)) 
-	{
-            if (gameMode == 2 && currentPlayer == 'O') 
+        {
+            if (selectedMode == 2 && currentPlayer == 'O')
             {
                 printf("COMPUTER WINS!\n");
             } 
@@ -132,7 +135,7 @@ int main()
 
         // Check if game is a draw (board full, no winner)
         if (checkDraw(gameBoard, boardSize)) 
-	{
+        {
             printf(" DRAW: The board is full with no winner.\n");
             fprintf(gameLogFile, " RESULT: Draw game\n");
             fprintf(gameLogFile, "=== GAME OVER ===\n");
@@ -143,7 +146,7 @@ int main()
         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
         
         // Only show message when switching to human player
-        if (currentPlayer == 'X' || (currentPlayer == 'O' && gameMode == 1)) 
+        if (currentPlayer == 'X' || (currentPlayer == 'O' && selectedMode == 1))  
         {
             printf("Switching turns... Next player: %c\n\n", currentPlayer);
         } 
@@ -154,7 +157,7 @@ int main()
     }
 
     // cleanup    
-    printf("\n Game log saved to 'tictactoe_log.txt'\n");
+    printf("\n Game log saved to 'tictactoe_record.txt'\n");
     printf(" Thanks for playing!\n");
 
     // Close log file and free memory
