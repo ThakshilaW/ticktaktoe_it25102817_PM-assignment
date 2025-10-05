@@ -8,10 +8,11 @@
 bool validMove(char** board, int size, int row, int col);
 bool checkWin(char** board, int size, char playerSymbol);
 bool checkDraw(char** board, int size);
-bool userInput(char** board, int size, int *row, int *col);
+void userInput(char** board, int size, int *row, int *col, int playerNum);
 int gameMode();
 void computerMove(char** board, int size, int *row, int *col);
-
+char playerSymbol(int playerNumber);//added for part 3 of the game
+int playerType(int playerNum, int gameMode); //to check if playwr is human or the computer
 
 bool validMove(char** board, int size, int row, int col)
 {
@@ -133,7 +134,7 @@ bool checkDraw(char** board, int size)
 
 
 
-bool userInput(char** board, int size, int *row, int *col)
+void userInput(char** board, int size, int *row, int *col, int playerNum)
 {
     while (true)
     {
@@ -174,26 +175,27 @@ int gameMode()
 {
     int mode;
     printf("Select Game Mode:\n");
-    printf("1. Two Players (User vs User)\n");
-    printf("2. User vs Computer\n");
-    printf("Enter choice (1-2): ");
-
+    printf("1. Three Players (All Human)\n");
+    printf("2. Two Humans + One Computer\n");
+    printf("3. One Human + Two Computers\n");
+    printf("Enter choice (1-3): ");
+    
     while (true)
     {
         if (scanf("%d", &mode) != 1)
         {
-            printf("Invalid input! Please enter 1 or 2: ");
+            printf("Invalid input! Please enter 1, 2, or 3: ");
             while (getchar() != '\n');
             continue;
         }
 
-        if (mode == 1 || mode == 2)
+        if (mode >= 1 && mode <= 3)
         {
             break;
         }
         else
-	{
-            printf("Invalid choice! Please enter 1 or 2: ");
+        {
+            printf("Invalid choice! Please enter 1, 2, or 3: ");
         }
     }
     return mode;
@@ -211,3 +213,31 @@ void computerMove(char** board, int size, int *row, int *col)
     
     printf("Computer chooses position (%d, %d)\n", *row, *col);
 }
+
+char playerSymbol(int playerNumber)
+{
+	char symbol[3] = {'X', 'O', 'Z'};
+	if (playerNumber >= 0 && playerNumber<3)
+	{
+		return symbol[playerNumber];
+	}
+	return 'X';
+}
+
+
+int playerType(int playerNum, int gameMode)
+{
+	if (gameMode == 1)
+	{
+		return 1;
+	}
+	else if (gameMode == 2)
+	{
+		return (playerNum == 2) ? 0 : 1;//one player of the three is the computer, goes by symbol Z
+	}
+	else
+	{
+		return (playerNum == 0) ? 1 : 0;//only one player is human, goes by X
+	}
+}
+
