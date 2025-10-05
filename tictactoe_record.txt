@@ -1,0 +1,187 @@
+=== TIC-TAC-TOE GAME RECORD ===
+Board Size: 5x5
+Mode: User vs Computer (X vs O)
+=============================
+
+Player X moved to (3, 4)
+Current board state:
+| ` | û | \ | ( | S |
+|   |   |   |   |   |
+|   |   |   |   |   |
+|   |   |   |   | X |
+|   |   |   |   |   |
+--- End of turn ---
+
+Player O moved to (3, 3)
+Current board state:
+| ` | û | \ | ( | S |
+|   |   |   |   |   |
+|   |   |   |   |   |
+|   |   |   | O | X |
+|   |   |   |   |   |
+--- End of turn ---
+
+Player X moved to (4, 2)
+Current board state:
+| ` | û | \ | ( | S |
+|   |   |   |   |   |
+|   |   |   |   |   |
+|   |   |   | O | X |
+|   |   | X |   |   |
+--- End of turn ---
+
+Player O moved to (1, 4)
+Current board state:
+| ` | û | \ | ( | S |
+|   |   |   |   | O |
+|   |   |   |   |   |
+|   |   |   | O | X |
+|   |   | X |   |   |
+--- End of turn ---
+
+Player X moved to (3, 2)
+Current board state:
+| ` | û | \ | ( | S |
+|   |   |   |   | O |
+|   |   |   |   |   |
+|   |   | X | O | X |
+|   |   | X |   |   |
+--- End of turn ---
+
+Player O moved to (2, 2)
+Current board state:
+| ` | û | \ | ( | S |
+|   |   |   |   | O |
+|   |   | O |   |   |
+|   |   | X | O | X |
+|   |   | X |   |   |
+--- End of turn ---
+
+Player X moved to (1, 1)
+Current board state:
+| ` | û | \ | ( | S |
+|   | X |   |   | O |
+|   |   | O |   |   |
+|   |   | X | O | X |
+|   |   | X |   |   |
+--- End of turn ---
+
+Player O moved to (3, 1)
+Current board state:
+| ` | û | \ | ( | S |
+|   | X |   |   | O |
+|   |   | O |   |   |
+|   | O | X | O | X |
+|   |   | X |   |   |
+--- End of turn ---
+
+Player X moved to (4, 4)
+Current board state:
+| ` | û | \ | ( | S |
+|   | X |   |   | O |
+|   |   | O |   |   |
+|   | O | X | O | X |
+|   |   | X |   | X |
+--- End of turn ---
+
+Player O moved to (1, 0)
+Current board state:
+| ` | û | \ | ( | S |
+| O | X |   |   | O |
+|   |   | O |   |   |
+|   | O | X | O | X |
+|   |   | X |   | X |
+--- End of turn ---
+
+Player X moved to (4, 3)
+Current board state:
+| ` | û | \ | ( | S |
+| O | X |   |   | O |
+|   |   | O |   |   |
+|   | O | X | O | X |
+|   |   | X | X | X |
+--- End of turn ---
+
+Player O moved to (2, 1)
+Current board state:
+| ` | û | \ | ( | S |
+| O | X |   |   | O |
+|   | O | O |   |   |
+|   | O | X | O | X |
+|   |   | X | X | X |
+--- End of turn ---
+
+Player X moved to (4, 1)
+Current board state:
+| ` | û | \ | ( | S |
+| O | X |   |   | O |
+|   | O | O |   |   |
+|   | O | X | O | X |
+|   | X | X | X | X |
+--- End of turn ---
+
+Player O moved to (4, 0)
+Current board state:
+| ` | û | \ | ( | S |
+| O | X |   |   | O |
+|   | O | O |   |   |
+|   | O | X | O | X |
+| O | X | X | X | X |
+--- End of turn ---
+
+Player X moved to (3, 0)
+Current board state:
+| ` | û | \ | ( | S |
+| O | X |   |   | O |
+|   | O | O |   |   |
+| X | O | X | O | X |
+| O | X | X | X | X |
+--- End of turn ---
+
+Player O moved to (1, 2)
+Current board state:
+| ` | û | \ | ( | S |
+| O | X | O |   | O |
+|   | O | O |   |   |
+| X | O | X | O | X |
+| O | X | X | X | X |
+--- End of turn ---
+
+Player X moved to (2, 0)
+Current board state:
+| ` | û | \ | ( | S |
+| O | X | O |   | O |
+| X | O | O |   |   |
+| X | O | X | O | X |
+| O | X | X | X | X |
+--- End of turn ---
+
+Player O moved to (1, 3)
+Current board state:
+| ` | û | \ | ( | S |
+| O | X | O | O | O |
+| X | O | O |   |   |
+| X | O | X | O | X |
+| O | X | X | X | X |
+--- End of turn ---
+
+Player X moved to (2, 4)
+Current board state:
+| ` | û | \ | ( | S |
+| O | X | O | O | O |
+| X | O | O |   | X |
+| X | O | X | O | X |
+| O | X | X | X | X |
+--- End of turn ---
+
+Player O moved to (2, 3)
+Current board state:
+| ` | û | \ | ( | S |
+| O | X | O | O | O |
+| X | O | O | O | X |
+| X | O | X | O | X |
+| O | X | X | X | X |
+--- End of turn ---
+
+ RESULT: Draw game
+=== GAME OVER ===

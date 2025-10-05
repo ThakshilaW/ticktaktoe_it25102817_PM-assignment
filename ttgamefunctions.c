@@ -14,7 +14,7 @@ void displayBoard(char** board, int size);
 char** Board(int size)
 {
 	// Allocate memory for array of row pointers
-	char** newBoard = (char**)malloc(size * sizeof(char));
+	char** newBoard = (char**)malloc(size * sizeof(char*));
 	if (newBoard == NULL)
 	{
 		printf("Memory allocation failed (row)\n");
