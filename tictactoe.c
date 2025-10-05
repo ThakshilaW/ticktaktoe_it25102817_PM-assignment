@@ -4,8 +4,8 @@
  * Part 1: Two Players | Part 2: Player vs Computer
  */
 
-#include <tttgamefunctions.h>
-#include <tttgamelogicninputfunc.h>
+#include "tttgamefunctions.h"
+#include "tttgamelogicninputfunc.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
